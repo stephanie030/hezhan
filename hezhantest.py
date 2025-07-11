@@ -25,51 +25,41 @@ filtered_df = df.copy()
 
 if show_filter:
     st.sidebar.header("🔍 查詢模式")
-    mode = st.sidebar.radio("選擇查詢方式", ["依料號/品名", "依度數/尺寸/單位/顏色"])
+    mode = st.sidebar.radio("選擇查詢方式", ["依料號/品名", "依電壓/線種/尺寸/顏色"])
 
     if mode == "依料號/品名":
         col1, col2 = st.columns(2)
-
-        # 取得所有料號和品名的選項
-        part_numbers = [""] + df['itm_no'].dropna().unique().tolist()
-        product_names = [""] + df["desc"].dropna().unique().tolist()
-
         with col1:
-            selected_part_number = st.selectbox("📌選擇料號", options=part_numbers, key="part_number_select")
-
+            part_number = st.selectbox("📌選擇料號", options=df['itm_no'].dropna().unique(), key="pnum", index=0)
         with col2:
-            # 如果選擇了料號，自動找到對應的品名
-            if selected_part_number:
-                matched_names = df[df["itm_no"] == selected_part_number]["desc"].dropna().unique()
-                if len(matched_names) > 0:
-                    # 如果有對應的品名，只顯示對應的品名選項
-                    name_options = [""] + matched_names.tolist()
-                    default_index = 1 if len(matched_names) == 1 else 0  # 如果只有一個品名，自動選擇
-                else:
-                    name_options = [""]
-                    default_index = 0
-            else:
-                # 如果沒有選擇料號，顯示所有品名選項
-                name_options = product_names
-                default_index = 0
+            selected_name = st.selectbox("📌選擇品名", options=[""] + df["desc"].unique().tolist())
+        # with col2:
+        #     matched_name = df[df["itm_no"] == part_number]["desc"].values[0] if part_number else ""
+        #     st.markdown(f"**對應品名：** {matched_name}")
+        if st.button("搜尋"):
+            filtered_df = df[df["itm_no"] == part_number]
+            #  # 放大搜尋按鈕
+            # st.markdown("""
+            #  <style>
+            #  .big-button > button {
+            # font-size: 20px !important;
+            # height: 3em !important;
+            # width: 100%;
+            # background-color: #1f77b4;
+            # color: white;
+            # font-weight: bold;
+            # }
+            # </style>
+            # """, unsafe_allow_html=True)
 
-            selected_name = st.selectbox("📌選擇品名", options=name_options, key="product_name_select", index=default_index)
-
-        # 自動搜尋邏輯（不需要按鈕）
-        if selected_part_number:
-            filtered_df = df[df["itm_no"] == selected_part_number]
-        elif selected_name:
-            filtered_df = df[df["desc"] == selected_name]
-
-    elif mode == "依度數/尺寸/單位/顏色":
+    elif mode == "依電壓/線種/尺寸/顏色":
         col1, col2, col3, col4 = st.columns(4)
         voltage = col1.multiselect("度數 (D欄)", options=df["度數_解析"].dropna().unique())
         product_type = col2.multiselect("尺寸 (F欄)", options=df["尺寸_解析"].dropna().unique())
         size = col3.multiselect("尺寸單位 (G欄)", options=df["尺寸單位_解析"].dropna().unique())
-        color = col4.multiselect("顏色 (M欄)", options=df["顏色_解析"].dropna().unique())
+        color = col4.multiselect("顏色 (I欄)", options=df["顏色_解析"].dropna().unique())
 
-        # 自動搜尋邏輯（不需要按鈕）
-        if voltage or product_type or size or color:
+        if st.button("搜尋"):
             filtered_df = df.copy()
             if voltage:
                 filtered_df = filtered_df[filtered_df["度數_解析"].isin(voltage)]
@@ -78,7 +68,7 @@ if show_filter:
             if size:
                 filtered_df = filtered_df[filtered_df["尺寸單位_解析"].isin(size)]
             if color:
-                filtered_df = filtered_df[filtered_df["顏色"].isin(color)]
+                filtered_df = filtered_df[filtered_df["顏色_解析"].isin(color)]
 
 # 查無資料提示
 if filtered_df.empty:
