@@ -3,7 +3,8 @@ import pandas as pd
 import io
 
 # 檔案路徑
-EXCEL_PATH = r"D:\\OneDrive - 華新麗華股份有限公司\\料號比對最終資料\\賀展_比對結果.xlsx"
+# EXCEL_PATH = r"D:\\OneDrive - 華新麗華股份有限公司\\料號比對最終資料\\賀展_比對結果.xlsx"
+EXCEL_PATH = "賀展_比對結果.xlsx"
 
 # 標題
 st.set_page_config(page_title="賀展料號比對系統", layout="wide")
