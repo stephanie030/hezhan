@@ -25,9 +25,9 @@ filtered_df = df.copy()
 
 if show_filter:
     st.sidebar.header("🔍 查詢模式")
-    mode = st.sidebar.radio("選擇查詢方式", ["依料號/品名", "依度數/尺寸/單位/顏色"])
+    mode = st.sidebar.radio("選擇查詢方式", ["依經銷商料號/品名", "依耐溫等級/尺寸/單位/顏色"])
 
-    if mode == "依料號/品名":
+    if mode == "依經銷商料號/品名":
         col1, col2 = st.columns(2)
 
         # 取得所有料號和品名的選項
@@ -61,18 +61,18 @@ if show_filter:
         elif selected_name:
             filtered_df = df[df["desc"] == selected_name]
 
-    elif mode == "依度數/尺寸/單位/顏色":
+    elif mode == "依耐溫等級/尺寸/單位/顏色":
         col1, col2, col3, col4 = st.columns(4)
-        voltage = col1.multiselect("度數 (D欄)", options=df["度數_解析"].dropna().unique())
-        product_type = col2.multiselect("尺寸 (F欄)", options=df["尺寸_解析"].dropna().unique())
-        size = col3.multiselect("尺寸單位 (G欄)", options=df["尺寸單位_解析"].dropna().unique())
-        color = col4.multiselect("顏色 (M欄)", options=df["顏色_解析"].dropna().unique())
+        voltage = col1.multiselect("耐溫等級", options=df["耐溫等級_解析"].dropna().unique())
+        product_type = col2.multiselect("尺寸", options=df["尺寸_解析"].dropna().unique())
+        size = col3.multiselect("尺寸單位", options=df["尺寸單位_解析"].dropna().unique())
+        color = col4.multiselect("顏色", options=df["顏色"].dropna().unique())
 
         # 自動搜尋邏輯（不需要按鈕）
         if voltage or product_type or size or color:
             filtered_df = df.copy()
             if voltage:
-                filtered_df = filtered_df[filtered_df["度數_解析"].isin(voltage)]
+                filtered_df = filtered_df[filtered_df["耐溫等級_解析"].isin(voltage)]
             if product_type:
                 filtered_df = filtered_df[filtered_df["尺寸_解析"].isin(product_type)]
             if size:
