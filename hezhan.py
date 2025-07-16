@@ -25,7 +25,7 @@ filtered_df = df.copy()
 
 if show_filter:
     st.sidebar.header("🔍 查詢模式")
-    mode = st.sidebar.radio("選擇查詢方式", ["依經銷商料號/品名", "依耐溫等級/尺寸/單位/顏色"])
+    mode = st.sidebar.radio("選擇查詢方式", ["依經銷商料號/品名", "依線種/耐溫等級/尺寸/單位/顏色"])
 
     if mode == "依經銷商料號/品名":
         col1, col2 = st.columns(2)
@@ -70,7 +70,7 @@ if show_filter:
         color = col5.multiselect("顏色", options=df["顏色"].dropna().unique())
 
         # 自動搜尋邏輯（不需要按鈕）
-        if voltage or product_type or size or color:
+        if line_type or voltage or product_type or size or color:
             filtered_df = df.copy()
             if line_type:
                 filtered_df = filtered_df[filtered_df["華新_產品名稱(線種)"].isin(line_type)]
