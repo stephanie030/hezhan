@@ -61,16 +61,19 @@ if show_filter:
         elif selected_name:
             filtered_df = df[df["desc"] == selected_name]
 
-    elif mode == "依耐溫等級/尺寸/單位/顏色":
-        col1, col2, col3, col4 = st.columns(4)
-        voltage = col1.multiselect("耐溫等級", options=df["耐溫等級_解析"].dropna().unique())
-        product_type = col2.multiselect("尺寸", options=df["尺寸_解析"].dropna().unique())
-        size = col3.multiselect("尺寸單位", options=df["尺寸單位_解析"].dropna().unique())
-        color = col4.multiselect("顏色", options=df["顏色"].dropna().unique())
+    elif mode == "依線種/耐溫等級/尺寸/單位/顏色":
+        col1, col2, col3, col4, col5 = st.columns(5)
+        line_type = col1.multiselect("線種", options=df["華新_產品名稱(線種))"].dropna().unique())
+        voltage = col2.multiselect("耐溫等級", options=df["耐溫等級_解析"].dropna().unique())
+        product_type = col3.multiselect("尺寸", options=df["尺寸_解析"].dropna().unique())
+        size = col4.multiselect("尺寸單位", options=df["尺寸單位_解析"].dropna().unique())
+        color = col5.multiselect("顏色", options=df["顏色"].dropna().unique())
 
         # 自動搜尋邏輯（不需要按鈕）
         if voltage or product_type or size or color:
             filtered_df = df.copy()
+            if line_type:
+                filtered_df = filtered_df[filtered_df["華新_產品名稱(線種))"].isin(line_type)]
             if voltage:
                 filtered_df = filtered_df[filtered_df["耐溫等級_解析"].isin(voltage)]
             if product_type:
